@@ -1,0 +1,263 @@
+---
+output:
+  pdf_document: default
+  html_document: default
+---
+
+------------------------------------------------------------------------
+
+FINAL Project output: html_notebook VasireddyAksheta-FinalProject.rmd---
+
+# FINAL PROJECT
+
+#### Foundations in Data Science - Aksheta Vasireddy
+
+## TCGA-BRCA
+
+#### Install Packages:
+
+```{r}
+# Explanation: 
+# - Import libraries 
+
+library(tidyverse)
+library(gridExtra)
+library(ggpubr)
+library(ComplexHeatmap)
+```
+
+#### Load Dataset:
+
+```{r}
+# Explanation: 
+# - Load data set 
+# - Read in count and metadata files using read.csv()
+# - Visualize data frames using head 
+# - Dimensions 
+
+# Set file path
+file_path <- "/Users/akshetavasireddy/documents/"
+
+# Read in files
+count_df <- read.csv(paste0(file_path, "counts.csv"), row.names = 1) # Read in count data 
+metadata <- read.csv(paste0(file_path,"meta_data.csv"), row.names = 1) # Read in meta data
+
+# Visualize data frames
+# head(count_df, 10)
+# head(metadata, 10)
+
+# Dimensions of data frames
+dim(count_df) # Number of genes 
+dim(metadata) # Number of samples 
+```
+
+#### Summary Statistics:
+
+```{r}
+# Explanation:
+# - Get gene data from count matrix (gene: ENSG00000141510.18, TP53 Gene)
+# - Generate summary statistics of selected gene 
+
+# Set target gene row
+target_gene_1 <- count_df['ENSG00000141510.18',]
+
+# Transpose the data
+gene_data_1 <- t(target_gene_1)
+
+## Visualize gene data
+head(gene_data_1)
+
+# Get numeric vector 
+gene_count_1 <- as.numeric(target_gene_1)
+
+# Generate full summary statistics
+summary(gene_count_1, na.rm = TRUE) 
+sd(gene_count_1, na.rm = TRUE) # Get standard deviation
+```
+
+#### Visualization:
+
+```{r}
+# Explanation: 
+# - Create histogram 
+# - Create scatter plot 
+# - Create violin plot 
+
+# Histogram
+p1 <- ggplot(gene_data_1, aes(x = gene_count_1)) +
+    geom_histogram(bins = 40, 
+                   fill = "plum4", 
+                   color = "black", 
+                   alpha = 0.7) +
+    labs(
+      title = paste("Gene Count Distribution: TP53"),
+      x = "Gene Count", 
+      y = "Number of Samples") +
+    theme_minimal()
+print(p1)
+ggsave("final-project_histogram-plot.png", plot = p1, width = 8, height = 6) # Save plot as .png
+
+# Scatter plot
+# Second gene: ENSG00000121879.6, PIK3CA
+target_gene_2 <- count_df['ENSG00000121879.6',] # Select second gene
+gene_data_2 <- t(target_gene_2) # Transpose second gene data
+head(gene_data_2) # Visualize second gene data
+gene_count_2 <- as.numeric(target_gene_2) # Get numeric vector of second gene
+summary(gene_count_2, na.rm = TRUE) # Generate gene 2 summary statistics
+
+gene_data_df <- merge(gene_data_1, gene_data_2, by = 'row.names', all = TRUE) # Merge columns into single data frame
+gene_data_df <- gene_data_df %>% 
+  select(-Row.names)
+head(gene_data_df)
+
+# Create scatter plot
+p2 <- ggplot(gene_data_df, aes(x = gene_count_1, y = gene_count_2)) +
+  geom_point(alpha = 0.4, color = "skyblue2") +
+  geom_smooth(method = "lm", se = TRUE, color = "black") +
+  scale_x_log10() +
+  scale_y_log10() +
+  labs(
+    title = "Scatter Plot: TP53 vs PIK3CA",
+    x = "Gene 1: TP53",
+    y = "Gene 2: PIK3CA"
+  ) +
+  theme_minimal()
+print(p2) # Display scatter plot
+ggsave("final-project_scatter-plot.png", plot = p2, width = 8, height = 6) # Save plot as .png
+
+# Violin plot 
+metadata_1 <- metadata %>% # Get pathologic stage column from metadata 
+  select(paper_BRCA_Subtype_PAM50)
+
+rownames(metadata_1) <- gsub("-", ".", rownames(metadata_1)) # Make format common 
+
+metadata_subtype_df <- merge(gene_data_1, metadata_1, by = "row.names") # Merge columns into a single data frame
+metadata_subtype_df <- metadata_subtype_df %>%
+  select(-Row.names)
+head(metadata_subtype_df)
+
+# Create violin plot (covariate: PAM50 Subtype)
+p3 <- ggplot(metadata_subtype_df, aes(x = paper_BRCA_Subtype_PAM50, y = gene_count_1, fill = paper_BRCA_Subtype_PAM50)) +
+  geom_violin(alpha = 0.7) +
+  scale_fill_manual(values = c("Basal" = "lightblue", "Her2" = "lightpink", "LumA" = "khaki", "LumB" = "plum", "Normal" = "darkkhaki"), guide = "none") +
+  labs(title = "TP53 Count Data vs PAM50 Subtype", 
+       x = "PAM50 Subtype", 
+       y = "Gene Count",
+       fill = "",
+       ) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+print(p3)
+ggsave("final-project_violin-plot.png", plot = p3, width = 8, height = 6) # Save plot as .png
+
+# Create cumulative distribution function (cdf)
+p4 <- ggplot(metadata_subtype_df, aes(x = gene_count_1)) +
+  stat_ecdf(geom = "step", color = "darkblue") +
+  labs(title = "CDF of PAM50 Subtype", 
+       x = "PAM50 Subtype", 
+       y = "Cumulative Probability") +
+  theme_minimal()
+print(p4)
+ggsave("final-project_cdf-plot.png", plot = p4, width = 8, height = 6) # Save plot as .png
+
+# Arrange plots into panel
+plots <- ggarrange(p1, p2, p3, p4,
+                     ncol = 2,
+                     nrow = 2)
+print(plots) # Display panel 
+ggsave("final-project_gene-plots_panel.png", plot = plots, width = 8, height = 6) # Save panel as .png
+```
+
+#### Heatmap Analysis:
+
+```{r}
+# Explanation: 
+# - Select 10 genes 
+# - Generate heat map 
+# - Add annotation bar 
+
+# Select 10 genes focusing mostly on those part of the PAM50 subtype
+genes_heatmap <- rownames(count_df)[c(1944,  # ESR1
+                                      1848,  # BIRC5
+                                      2007,  # CDC6
+                                      6151,  # FOXA1
+                                      16336, # KRT14
+                                      9132,  # MKI67
+                                      2432,  # MYBL2
+                                      5716,  # CD93
+                                      2905,  # SFRP1
+                                      13101  # CXXC5
+)]
+
+head(genes_heatmap, 10)
+
+gene_symbols <- c(ESR1  = 1944, # Assign Ensembl IDs to gene symbols
+                  BIRC5 = 1848,
+                  CDC6  = 2007,
+                  FOXA1 = 6151,
+                  KRT14 = 16336,
+                  MKI67 = 9132,
+                  MYBL2 = 2432,
+                  CD93  = 5716,
+                  SFRP1 = 2905,
+                  CXXC5 = 13101)
+
+# Keep only the 10 genes we want
+counts_subset <- count_df[genes_heatmap, ]
+counts_matrix <- log2(as.matrix(counts_subset) + 1) # Convert dataset to matrix/log-transform
+rownames(counts_matrix) <- names(gene_symbols) # Convert Ensembl IDs to gene symbols 
+
+# Heatmap annotations
+column_ha <- HeatmapAnnotation(
+  "PAM50 Subtype" = metadata$paper_BRCA_Subtype_PAM50,
+  col = list(
+    "PAM50 Subtype" = c("Basal" = "lightblue", "Her2" = "lightpink", "LumA" = "khaki", "LumB" = "plum", "Normal" = "darkkhaki")
+  )
+)
+
+# Create heatmap
+heatmap_plot <- Heatmap(
+  counts_matrix,
+  name = "log2(count + 1)",
+  top_annotation = column_ha,
+  show_row_names = TRUE,
+  show_column_names = FALSE,
+  show_column_dend = FALSE,
+  cluster_columns = TRUE,
+  cluster_rows = TRUE,
+  column_title = "Samples",
+  row_title = "Genes",
+  heatmap_legend_param = list(title = "Count\n(log2(Count + 1))")
+)
+
+print(heatmap_plot) # Display heatmap 
+```
+
+#### Covariate Summary Statistics
+
+```{r}
+# Covariate 1 Summary Statistics: PAM50 Subtype
+counts_PAM50subtype <- metadata %>% # Count number of each subtype occurrence 
+  count(paper_BRCA_Subtype_PAM50, name = "Count")
+print(counts_PAM50subtype) # Print counts 
+summary(counts_PAM50subtype, na.rm = TRUE) # Get summary statistics 
+
+# Covariate 2 Summary Statistics: Age
+summary(metadata$age_at_index, na.rm = TRUE)
+sd(metadata$age_at_index, na.rm = TRUE)
+
+# Create summary statistics table of covariates 
+PAM50_counts.df <- data.frame( # PAM50 Counts
+  PAM50_Subtype = c("Basal", "Her2", "LumA", "LumB", "Normal"),
+  Counts = c(197, 82, 571, 209, 40)
+)
+  
+covariate_summarystats.df <- data.frame(
+  Summary_Stats = c("Min.", "1st Qu.", "Median", "Mean", "3rd Qu.", "Max."),
+  PAM50 = c(40.0, 94.5, 164.5, 205.2, 206.0, 571.0), # PAM50 Stats
+  Age = c(26.00, 48.00, 58.00, 58.28, 67.00, 89.00) # Age Stats
+)
+
+print(PAM50_counts.df)
+print(covariate_summarystats.df)
+```
