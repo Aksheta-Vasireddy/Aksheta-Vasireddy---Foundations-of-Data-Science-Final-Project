@@ -13,16 +13,18 @@
 \maketitle
 
 \section{Introduction}
-This report analyzes RNA-sequencing data from the Breast Invasive Carcinoma Cohort (BRCA) of The Cancer Genome Atlas (TCGA); a data set that includes 1,231 samples and over 11000 patients \cite{NIH}. The goal was to observe the expression of two cancer-related genes. The chosen genes for this analysis are TP53 and PIK3CA. I would like to see how they not only relate to each other, but also to the breast cancer subtypes. TP53 (Ensembl ID: ENSG00000141510.18), is a tumor suppressor, which means that its usual function involves helping stop damaged cells from dividing and spreading further. However, when this gene is mutated that protection is lost, and cells are more likely to form tumors \cite{ensemblEnsembl}\cite{medlineplusTP53Gene}. The second gene is PIK3CA (Ensembl ID: ENSG00000121879.6), one of the most frequently mutated genes seen in patients with breast cancer. This gene helps control cell growth and survival, and activated mutations can cause uncontrolled cell growth \cite{ensemblEnsembl}\cite{medlineplusPIK3CAGene}.
+This report analyzes RNA-sequencing data from the Breast Invasive Carcinoma Cohort (BRCA) of The Cancer Genome Atlas (TCGA); a data set that includes over 11000 patients and 60000 samples \cite{NIH}. The goal was to observe the expression of two cancer-related genes: TP53 and PIK3CA. 
+The TP53 gene (Ensembl ID: ENSG00000141510.18), encodes a tumor suppressor protein that helps prevent damaged cells from dividing and spreading. When TP53 is mutated, that protection is lost, increasing the likelihood of tumor formation. \cite{ensemblEnsembl}\cite{medlineplusTP53Gene}. 
+The second gene, PIK3CA (Ensembl ID: ENSG00000121879.6), is one of the most frequently mutated genes seen in patients with breast cancer. This gene similar to TP53, helps control cell proliferation and survival, activated mutations can cause uncontrolled cell growth \cite{ensemblEnsembl}\cite{medlineplusPIK3CAGene}.
 
 \section{Methods}
-The packages required for installation are tidyverse which includes packages such as ggplot2 for creating visualizations, readr to read in the dataset, and dplyr for summary statistics. Additionally, gridExtra allows for plot panel arrangement, ggpubr allows for statistical value calculations, and finally the ComplexHeatmap library is used for heatmap visualization and comparisons.
+The visualizations and analysis were conducted in R using packages including the tidyverse and ggplot2. These packages were used for data visualization, manipulation, and analysis. Additionally, gridExtra allows for the arrangement of multiple plots, while ComplexHeatmap library is used for heatmap visualization and comparison.
 
 \section{Results}
-After loading the count and metadata files, I calculated summary statistics for the first gene, TP53. The counts ranged from [274] to [25897], with a mean of [4936], a median of [4441], and a standard deviation of [3036.709]. The average and median are fairly low demonstrating a small representation of gene count. Since the mean is greater than the median, it is predicted that the data will likely be right or positively-skewed. To validate this, a histogram, along with a few other plots, were created to visualize the genes in the data and compare them to co-variates.
+After loading the gene count and metadata files, summary statistics were calculated for TP53. The counts ranged from 274 to 25897, with a mean of 4936, a median of 4441, and a standard deviation of 3036.709. The mean and median are relatively low, suggesting that most samples have lower TP53 counts while a smaller number have substantially higher values. Because the mean is greater than the median, the distribution may be right-skewed. To further evaluate this pattern and examine relationships within the data, several visualizations were created.
 
 \subsection{Histogram}
-The histogram displays the TP53 gene counts. As we can see, the distribution is heavily right skewed where most samples have counts at or below [10000] while a very small number have higher count values \cite{DartmouthCollegeMSHDSLectures}.
+The histogram illustrates the distribution of TP53 gene counts across samples. The distribution is strongly right-skewed, with most samples having counts below 10000 and a small number having higher values \cite{DartmouthCollegeMSHDSLectures}.
 
 \begin{figure}[H]
     \centering
@@ -32,7 +34,7 @@ The histogram displays the TP53 gene counts. As we can see, the distribution is 
 \end{figure}
 
 \subsection{Scatter Plot}
-This scatter plot compares the TP53 and PIK3CA counts for each sample. The regression line shows a positive correlation, sloping upward. This indicates that samples with higher TP53 tend to have higher PIK3CA, but it does not mean that one gene causes the other \cite{DartmouthCollegeMSHDSLectures}.
+The scatter plot compares TP53 and PIK3CA counts for each sample. The fitted regression line has a positive slope, indicating that in general, samples with higher TP53 counts tend to have higher PIK3CA counts. However, the positive correlation does not guarantee that one causes another \cite{DartmouthCollegeMSHDSLectures}.
 
 \begin{figure}[H]
     \centering
@@ -42,7 +44,7 @@ This scatter plot compares the TP53 and PIK3CA counts for each sample. The regre
 \end{figure}
 
 \subsection{Violin Plot}
-Then, the violin plot shows the TP53 counts in the PAM50 breast cancer subtypes: Luminal A, Luminal B, HER2, Basal and Normal-like. Again, most samples show a count less than 10000, mostly ranging from about 2000 to 4000, however LumA and Basal subtypes have counts above 20000, unlike the others. 
+The violin plot shows the TP53 counts across the PAM50 breast cancer subtypes: Luminal A, Luminal B, HER2, Basal and Normal-like. Again, most samples have counts below 10000,with values mostly ranging from around 2000 to 4000. However, the LumA and Basal subtypes have counts exceeding 20000, unlike the others. 
 
 \begin{figure}[H]
     \centering
@@ -52,7 +54,7 @@ Then, the violin plot shows the TP53 counts in the PAM50 breast cancer subtypes:
 \end{figure}
 
 \subsection{Cumulative Distribution Function}
-Next, the cumulative distribution function demonstrates the TP53 Gene Counts. The median line at 0.50 probability falls at around 5000 counts, indicating that at least half of the samples have less than 500 TP53 gene counts. Additionally, the "tail" begins to plateau starting at 10000, similar to the plot demonstrating the right-skewed histogram  \cite{DartmouthCollegeMSHDSLectures}. 
+The cumulative distribution function (CDF) further illustrates the distrubution of TP53 gene counts. The median, corresponding to a cumulative probability of 0.50,  is approximately 5000 counts, indicating that at least half of the samples have fewer than 5000 TP53 gene counts. Additionally, the curve begins to plateau around 10000 counts, supporting the right-skewed histogram  \cite{DartmouthCollegeMSHDSLectures}. 
 
 \begin{figure}[H]
     \centering
@@ -72,7 +74,7 @@ Finally, the heat map shows ten selected genes across all samples, with each sam
 \end{figure}
 
 \subsection{Summary Statistics}
-The following summary statistics display values for two chosen co-variates: PAM50 Subtype and Age. PAM50 Subtype counts were first calculated, followed by summary statistic evaluation \cite{overleafTables}\cite{DartmouthCollegeMSHDSLectures}.
+The following summary statistics display values for two co-variates: PAM50 Subtype and Age. PAM50 Subtype counts were first calculated, followed by summary statistic evaluation \cite{overleafTables}\cite{DartmouthCollegeMSHDSLectures}.
 
 \begin{table}[H]
     \centering
@@ -118,13 +120,13 @@ National Cancer Institute - GDC Data Portal. \url{https://portal.gdc.cancer.gov/
 Ensembl. \url{https://ensembl.org} (2026). Accessed: 2026-10-19.
 
 \bibitem{medlineplusTP53Gene}
-TP53 gene - MedlinePlus Genetics. \url{https://medlineplus.gov} (2026). Accessed: 2026-10-19.
+TP53 gene - MedlinePlus Genetics. \url{https://medlineplus.gov/genetics/gene/tp53/} (2026). Accessed: 2026-10-19.
 
 \bibitem{medlineplusPIK3CAGene}
-PIK3CA gene - MedlinePlus Genetics. \url{https://medlineplus.gov} (2026). Accessed: 2026-10-19.
+PIK3CA gene - MedlinePlus Genetics. \url{https://medlineplus.gov/genetics/gene/pik3ca/} (2026). Accessed: 2026-10-19.
 
 \bibitem{overleafTables}
-Tables - Overleaf. \url{https://overleaf.com} (2026). Accessed: 2026-10-19.
+Tables - Overleaf. \url{https://www.overleaf.com/learn/latex/Tables%23Positioning_tables#Captions,_labels_and_references} (2026). Accessed: 2026-10-19.
 
 \bibitem{DartmouthCollegeMSHDSLectures}
 Fischer, S. (2026). Foundations of Data Science. Lecture Notes 1-5, Dartmouth College. Accessed: 2026-10.
