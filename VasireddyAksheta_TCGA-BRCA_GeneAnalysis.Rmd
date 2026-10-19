@@ -151,10 +151,10 @@ print(p3)
 ggsave("final-project_violin-plot.png", plot = p3, width = 8, height = 6) # Save plot as .png
 
 # Create cumulative distribution function (cdf)
-p4 <- ggplot(metadata_subtype_df, aes(x = gene_count_1)) +
+p4 <- ggplot(gene_data_1, aes(x = gene_count_1)) +
   stat_ecdf(geom = "step", color = "darkblue") +
-  labs(title = "CDF of PAM50 Subtype", 
-       x = "PAM50 Subtype", 
+  labs(title = "CDF of TP53 Counts", 
+       x = "TP53 Counts", 
        y = "Cumulative Probability") +
   theme_minimal()
 print(p4)
