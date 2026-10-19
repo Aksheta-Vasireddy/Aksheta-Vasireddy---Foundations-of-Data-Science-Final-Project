@@ -19,7 +19,7 @@ This report analyzes RNA-sequencing data from the Breast Invasive Carcinoma Coho
 The packages required for installation are tidyverse which includes packages such as ggplot2 for creating visualizations, readr to read in the dataset, and dplyr for summary statistics. Additionally, gridExtra allows for plot panel arrangement, ggpubr allows for statistical value calculations, and finally the ComplexHeatmap library is used for heatmap visualization and comparisons.
 
 \section{Results}
-After loading the count and metadata files, I calculated summary statistics for the first gene, TP53. The counts ranged from [274] to [25897], with a mean of [4936], a median of [4441], and a standard deviation of [3036.709]. The average and median are fairly low demonstrating a small representation of gene count. Since the mean is greater than the median, it is predicted that the data will likely be right or positively-skewed. To validate this, a histogram, along with a few other plots, were created to visualize the genes in the data and compare them to covariates.
+After loading the count and metadata files, I calculated summary statistics for the first gene, TP53. The counts ranged from [274] to [25897], with a mean of [4936], a median of [4441], and a standard deviation of [3036.709]. The average and median are fairly low demonstrating a small representation of gene count. Since the mean is greater than the median, it is predicted that the data will likely be right or positively-skewed. To validate this, a histogram, along with a few other plots, were created to visualize the genes in the data and compare them to co-variates.
 
 \subsection{Histogram}
 The histogram displays the TP53 gene counts. As we can see, the distribution is heavily right skewed where most samples have counts at or below [10000] while a very small number have higher count values \cite{DartmouthCollegeMSHDSLectures}.
@@ -52,17 +52,17 @@ Then, the violin plot shows the TP53 counts in the PAM50 breast cancer subtypes:
 \end{figure}
 
 \subsection{Cumulative Distribution Function}
-Next, the cumulative distribution function demonstrates the PAM50 Subtypes. \cite{DartmouthCollegeMSHDSLectures}. 
+Next, the cumulative distribution function demonstrates the TP53 Gene Counts. The median line at 0.50 probability falls at around 5000 counts, indicating that at least half of the samples have less than 500 TP53 gene counts. Additionally, the "tail" begins to plateau starting at 10000, similar to the plot demonstrating the right-skewed histogram  \cite{DartmouthCollegeMSHDSLectures}. 
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.75\textwidth]{final-project_cdf-plot.png}
-    \caption{Cumulative Distribution Function (CDF) of PAM50 Subtypes}
-    \label{Cumulative Distribution Function of PAM50 Subtypes}
+    \caption{Cumulative Distribution Function (CDF) of TP53 Counts}
+    \label{Cumulative Distribution Function of TP53 Counts}
 \end{figure}
 
 \subsection{Heatmap}
-Finally, the heat map shows ten randomly selected genes across all samples, with each sample's PAM50 subtype shown along the top. Since the PAM50 subtype is represented by only 50 total genes, it makes sense that the samples are not visibly clustered by subtype \cite{DartmouthCollegeMSHDSLectures}. 
+Finally, the heat map shows ten selected genes across all samples, with each sample's PAM50 subtype shown along the top. Most genes were specifically chosen to fall under the PAM50 subtype genes. Since the PAM50 subtype is represented by only 50 total genes, it makes sense that the samples are not visibly clustered by subtype \cite{DartmouthCollegeMSHDSLectures}. 
 
 \begin{figure}[H]
     \centering
@@ -72,7 +72,7 @@ Finally, the heat map shows ten randomly selected genes across all samples, with
 \end{figure}
 
 \subsection{Summary Statistics}
-The following summary statistics display values for two chosen covariates: PAM50 Subtype and Age. PAM50 Subtype counts were first calculates before summary statistics were evaluated \cite{overleafTables}\cite{DartmouthCollegeMSHDSLectures}.
+The following summary statistics display values for two chosen co-variates: PAM50 Subtype and Age. PAM50 Subtype counts were first calculated, followed by summary statistic evaluation \cite{overleafTables}\cite{DartmouthCollegeMSHDSLectures}.
 
 \begin{table}[H]
     \centering
@@ -105,7 +105,7 @@ The following summary statistics display values for two chosen covariates: PAM50
        Max.  & 571.0  & 89.00 \\
        \hline
     \end{tabular}
-    \caption{Covariate Summary Statistics for PAM50 Subtypes and Age}
+    \caption{Co-variate Summary Statistics for PAM50 Subtypes and Age}
     \label{tab:covariates_summary}
 \end{table}
 
