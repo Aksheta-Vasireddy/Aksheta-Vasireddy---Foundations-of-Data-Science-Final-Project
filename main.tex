@@ -13,16 +13,16 @@
 \maketitle
 
 \section{Introduction}
-This report analyzes RNA-sequencing data from the Breast Invasive Carcinoma Cohort (BRCA) of The Cancer Genome Atlas (TCGA); a data set that includes 1,231 samples and over 11000 patients \cite{NIH}. The goal was to observe the expression of two cancer-related genes. The chosen genes for this analysis are TP53 and PIK3CA. We would like to see how they not only relate to each other, but also to the breast cancer subtypes. TP53 (Ensembl ID: ENSG00000141510.18), is a tumor suppressor, which means that its usual function involves helping to stop damaged cells from dividing and spreading further. However, when this gene is mutated that protection is lost, and cells are more likely to form tumors \cite{ensemblEnsembl}\cite{medlineplusTP53Gene}. The second gene is PIK3CA (Ensembl ID: ENSG00000121879.6), one of the most frequently mutated genes seen in patients with breast cancer. This gene helps control cell growth and survival, and activated mutations can cause uncontrolled cell growth \cite{ensemblEnsembl}\cite{medlineplusPIK3CAGene}.
+This report analyzes RNA-sequencing data from the Breast Invasive Carcinoma Cohort (BRCA) of The Cancer Genome Atlas (TCGA); a data set that includes 1,231 samples and over 11000 patients \cite{NIH}. The goal was to observe the expression of two cancer-related genes. The chosen genes for this analysis are TP53 and PIK3CA. I would like to see how they not only relate to each other, but also to the breast cancer subtypes. TP53 (Ensembl ID: ENSG00000141510.18), is a tumor suppressor, which means that its usual function involves helping stop damaged cells from dividing and spreading further. However, when this gene is mutated that protection is lost, and cells are more likely to form tumors \cite{ensemblEnsembl}\cite{medlineplusTP53Gene}. The second gene is PIK3CA (Ensembl ID: ENSG00000121879.6), one of the most frequently mutated genes seen in patients with breast cancer. This gene helps control cell growth and survival, and activated mutations can cause uncontrolled cell growth \cite{ensemblEnsembl}\cite{medlineplusPIK3CAGene}.
 
 \section{Methods}
-The packages required for installation are tidyverse which includes packages such as ggplot2 for creating visualizations, readr to read in the dataset, and dplyr for summary statistics. Additionally, gridExtra allows for plot panel arrangement, ggpubr allows for statistical values, and finally the ComplexHeatmap library is used for heatmap visualization and comparisons.
+The packages required for installation are tidyverse which includes packages such as ggplot2 for creating visualizations, readr to read in the dataset, and dplyr for summary statistics. Additionally, gridExtra allows for plot panel arrangement, ggpubr allows for statistical value calculations, and finally the ComplexHeatmap library is used for heatmap visualization and comparisons.
 
 \section{Results}
-After loading the count and metadata files, I calculated summary statistics for the first gene, TP53. The counts ranged from [274] to [25897], with a mean of [4936], a median of [4441], and a standard deviation of [3036.709]. The average and median are fairly low demonstrating a small representation of gene count. Since the mean is greater than the median, it is predicted that the data will likely be right or positively-skewed. To validate this, a histogram along with a few other plots were created to visualize the genes in the data and compare them to chosen covariates.
+After loading the count and metadata files, I calculated summary statistics for the first gene, TP53. The counts ranged from [274] to [25897], with a mean of [4936], a median of [4441], and a standard deviation of [3036.709]. The average and median are fairly low demonstrating a small representation of gene count. Since the mean is greater than the median, it is predicted that the data will likely be right or positively-skewed. To validate this, a histogram, along with a few other plots, were created to visualize the genes in the data and compare them to covariates.
 
 \subsection{Histogram}
-The histogram displays the TP53 gene counts. As we can see, the distribution is heavily right skewed where most samples have counts below [10000] while a very small number have higher count values \cite{DartmouthCollegeMSHDSLectures}.
+The histogram displays the TP53 gene counts. As we can see, the distribution is heavily right skewed where most samples have counts at or below [10000] while a very small number have higher count values \cite{DartmouthCollegeMSHDSLectures}.
 
 \begin{figure}[H]
     \centering
@@ -32,7 +32,7 @@ The histogram displays the TP53 gene counts. As we can see, the distribution is 
 \end{figure}
 
 \subsection{Scatter Plot}
-This scatter plot compares the TP53 and PIK3CA counts for each sample. The regression line slopes upward, showing a positive correlation. This indicates that samples with higher TP53 tend to have higher PIK3CA, but it does not mean that one gene causes the other \cite{DartmouthCollegeMSHDSLectures}.
+This scatter plot compares the TP53 and PIK3CA counts for each sample. The regression line shows a positive correlation, sloping upward. This indicates that samples with higher TP53 tend to have higher PIK3CA, but it does not mean that one gene causes the other \cite{DartmouthCollegeMSHDSLectures}.
 
 \begin{figure}[H]
     \centering
